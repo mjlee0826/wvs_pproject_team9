@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { JWTPayload, createRemoteJWKSet, jwtVerify } from 'jose';
 import { ApiError } from '../utils/apiError';
 import { prisma } from '../utils/prismaClient';
 
@@ -16,22 +16,30 @@ const getJWKS = () =>
 
 let JWKS = getJWKS();
 
+function parseBearerToken(header?: string) {
+  if (!header?.startsWith('Bearer ')) return null;
+  return header.slice(7);
+}
+
+export async function verifyAccessToken(rawToken?: string, authHeader?: string): Promise<JWTPayload> {
+  const token = rawToken ?? parseBearerToken(authHeader ?? undefined);
+  if (!token) throw new ApiError('Unauthorized', 401);
+
+  const { payload } = await jwtVerify(token, JWKS, {
+    issuer: `${process.env.LOGTO_ENDPOINT}/oidc`,
+    audience: process.env.LOGTO_API_RESOURCE,
+  });
+
+  return payload;
+}
+
 export const requireAuth = async (
   req: Request,
   _res: Response,
   next: NextFunction,
 ) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith('Bearer ')) {
-      console.warn('[Auth] 缺少 Authorization header:', req.method, req.path);
-      throw new ApiError('Unauthorized', 401);
-    }
-    const token = authHeader.slice(7);
-    const { payload } = await jwtVerify(token, JWKS, {
-      issuer: `${process.env.LOGTO_ENDPOINT}/oidc`,
-      audience: process.env.LOGTO_API_RESOURCE,
-    });
+    const payload = await verifyAccessToken(undefined, req.headers.authorization);
     req.user = {
       sub: payload.sub as string,
       scope: payload.scope as string | undefined,
