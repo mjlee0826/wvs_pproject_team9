@@ -3,9 +3,9 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { useUser } from '../../../src/hooks/useUser';
-import ThreadPost from '../../../src/components/ThreadPost';
+import ThreadPost from '../../../src/features/post/components/ThreadPost';
 import LoadingScreen from '../../../src/components/LoadingScreen';
-import { postApi } from '../../../src/services/postApi';
+import { postApi } from '../../../src/features/post/services/postApi';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL?.replace('/api', '') ?? '';
 

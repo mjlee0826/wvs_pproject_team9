@@ -40,12 +40,35 @@ wvs_project_team9/
 
 | 工具 | 為什麼需要 | 怎麼確認有沒有 |
 |---|---|---|
-| **Node.js 20+** | 跑 backend 跟 frontend 都要 | `node -v` |
+| **Node.js 22 LTS** | 跑 backend 跟 frontend 都要 | `node -v` |
 | **npm** | 裝套件用 | `npm -v` |
 | **手機（Android 或 iOS）** | 跑 App 的地方 | 自己的就好 |
 | **Expo Go App** | 在手機上跑開發版的 App | 去 App Store / Google Play 下載 |
 
-> 💡 沒有 Node.js 的話，去 [nodejs.org](https://nodejs.org) 下載 LTS 版本安裝即可。
+> 💡 建議用 **nvm** 以「使用者層級」安裝 Node，不會改到系統全域設定、也不影響同機器其他人。
+
+### 1-1. 推薦：用 nvm 切到專案指定 Node（不影響其他人）
+
+在專案根目錄已提供 `.nvmrc`（固定在 Node 22）。
+
+```bash
+# 載入 nvm（若你的 shell 尚未自動載入）
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+# 讀取 .nvmrc 安裝並使用專案版本
+cd /path/to/wvs_pproject_team9
+nvm install
+nvm use
+
+# 確認版本
+node -v
+npm -v
+```
+
+你應該看到 Node `v22.x.x`。
+
+> 這個做法只影響「目前 shell 與目前使用者」，不會改動系統全域 Node。
 
 ---
 

@@ -7,9 +7,9 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useLogto } from '@logto/rn';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { usePost } from '@/hooks/usePost';
-import CommentItem from '@/components/CommentItem';
-import Loading from '@/components/Loading';
+import { usePost } from '../hooks/usePost';
+import CommentItem from '../components/CommentItem';
+import Loading from '../../../components/Loading';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL?.replace('/api', '') ?? '';
 
@@ -65,7 +65,6 @@ const PostDetail = () => {
     >
       <ScrollView className="flex-1" style={{ paddingTop: insets.top }}>
         <View className="p-4">
-          {/* 作者列 */}
           <TouchableOpacity
             className="flex-row items-center mb-4"
             onPress={() => router.push(`/(app)/user/${post.author.id}`)}
@@ -87,11 +86,9 @@ const PostDetail = () => {
             </View>
           </TouchableOpacity>
 
-          {/* 標題 + 內容 */}
           <Text className="text-xl font-bold text-[#111] mb-2.5">{post.title}</Text>
           <Text className="text-base text-gray-700 leading-[26px]">{post.content}</Text>
 
-          {/* 貼文圖片 */}
           {imageUri && (
             <Image
               source={{ uri: imageUri }}
@@ -100,7 +97,6 @@ const PostDetail = () => {
             />
           )}
 
-          {/* 留言 */}
           <View className="mt-6 mb-3">
             <Text className="text-[15px] font-semibold text-gray-700">
               留言 ({post.comments.length})
@@ -117,7 +113,6 @@ const PostDetail = () => {
         </View>
       </ScrollView>
 
-      {/* 留言輸入 */}
       <View
         className="flex-row items-center px-4 pt-3 border-t border-[#f0f0f0] bg-white"
         style={{ paddingBottom: insets.bottom + 8 }}

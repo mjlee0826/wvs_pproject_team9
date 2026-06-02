@@ -1,5 +1,5 @@
-import { prisma } from '../utils/prismaClient';
-import { ApiError } from '../utils/apiError';
+import { prisma } from '../../utils/prismaClient';
+import { ApiError } from '../../utils/apiError';
 
 export async function createComment(data: {
   content: string;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { userApi, User } from '../services/userApi';
-import { Post } from '../services/postApi';
+import { Post } from '../features/post/services/postApi';
 import { getCachedUser, setCachedUser } from '../utils/asyncStorage';
 
 export function useUser(userId: 'me' | string) {

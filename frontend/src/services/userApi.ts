@@ -1,5 +1,5 @@
 import { apiClient } from '../utils/api';
-import { Post } from './postApi';
+import { Post } from '../features/post/services/postApi';
 
 export interface User {
   id: string;

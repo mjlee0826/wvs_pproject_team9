@@ -10,6 +10,23 @@
 
 ## 1. 資料夾結構：每個資料夾應該放什麼
 
+### 1-0. 先固定 Node 版本（本專案使用 Node 22 LTS）
+
+為了避免「我這台可以、你那台不行」，請先在專案根目錄執行：
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+cd /path/to/wvs_pproject_team9
+nvm install
+nvm use
+node -v
+```
+
+專案有 `.nvmrc`，所以 `nvm install` / `nvm use` 會自動切到 Node 22。
+這是**使用者層級**設定，不會改動系統全域版本，也不會影響同台機器其他使用者。
+
 這節是**「我要新增一個檔案，應該放哪？」**的速查表。
 
 ### 1-1. Backend (`backend/src/`)

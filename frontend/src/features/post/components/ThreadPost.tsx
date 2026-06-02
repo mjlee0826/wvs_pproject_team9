@@ -35,7 +35,7 @@ const ThreadPost: React.FC<ThreadPostProps> = ({
 }) => {
   const avatarSource = typeof avatar === 'string'
     ? { uri: avatar }
-    : avatar ?? require('../../assets/avatar-default.jpg');
+    : avatar ?? require('../../../../assets/avatar-default.jpg');
 
   return (
     <TouchableOpacity
@@ -43,18 +43,15 @@ const ThreadPost: React.FC<ThreadPostProps> = ({
       onPress={onPressThread}
       activeOpacity={0.85}
     >
-      {/* 左側：頭像 */}
       <TouchableOpacity className="items-center mr-3 w-12" onPress={onPressAuthor} activeOpacity={0.7}>
         <Image source={avatarSource as any} className="w-12 h-12 rounded-full bg-gray-200" />
       </TouchableOpacity>
 
-      {/* 右側：內容 */}
       <View className="flex-1">
-        {/* 老師評語（有值才顯示） */}
         {TeacherName && (
           <View className="flex-row items-center mb-1.5">
             <Image
-              source={require('../../assets/icons/coin.png')}
+              source={require('../../../../assets/icons/coin.png')}
               className="w-[18px] h-[18px] mr-1"
               resizeMode="contain"
             />
@@ -62,7 +59,6 @@ const ThreadPost: React.FC<ThreadPostProps> = ({
           </View>
         )}
 
-        {/* Header */}
         <View className="flex-row items-center mb-1">
           <TouchableOpacity onPress={onPressAuthor} activeOpacity={0.7}>
             <Text className="font-bold text-base text-black">{name}</Text>
@@ -73,10 +69,8 @@ const ThreadPost: React.FC<ThreadPostProps> = ({
           <Ionicons name="chevron-down" size={16} color="#999" style={{ marginLeft: 'auto' }} />
         </View>
 
-        {/* 內文 */}
         <Text className="text-base leading-6 text-[#14171a] mb-2.5">{content}</Text>
 
-        {/* 圖片 */}
         {images && images.length > 0 && (
           <View className="mb-2.5">
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -91,7 +85,6 @@ const ThreadPost: React.FC<ThreadPostProps> = ({
           </View>
         )}
 
-        {/* 互動按鈕 */}
         <View className="flex-row items-center">
           <TouchableOpacity
             className="flex-row items-center mr-[30px] py-1"

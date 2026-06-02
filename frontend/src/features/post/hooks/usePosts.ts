@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { postApi, Post } from '../services/postApi';
-import { getCachedPosts, setCachedPosts } from '../utils/asyncStorage';
+import { getCachedPosts, setCachedPosts } from '../../../utils/asyncStorage';
 
 export function usePosts() {
   const [posts, setPosts] = useState<Post[]>([]);

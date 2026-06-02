@@ -5,7 +5,6 @@ import {
   Image,
   Keyboard,
   Modal,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -81,7 +80,6 @@ const CreatePostModal = ({ visible, onClose, onSubmit }: CreatePostModalProps) =
                 elevation: 5,
               }}
             >
-              {/* 分類選擇 */}
               <View className="z-10 mb-3">
                 <TouchableOpacity
                   className="flex-row justify-between items-center py-3 px-4 bg-white border border-brand rounded-xl"
@@ -108,7 +106,6 @@ const CreatePostModal = ({ visible, onClose, onSubmit }: CreatePostModalProps) =
                 )}
               </View>
 
-              {/* 文字輸入 */}
               <TextInput
                 className="h-[150px] border border-brand rounded-xl p-3 text-base mb-4 text-[#333]"
                 multiline
@@ -119,7 +116,6 @@ const CreatePostModal = ({ visible, onClose, onSubmit }: CreatePostModalProps) =
                 textAlignVertical="top"
               />
 
-              {/* 圖片區 */}
               <View className="flex-row items-center gap-2">
                 <TouchableOpacity className="mr-1" onPress={pickImage}>
                   <Ionicons name="image-outline" size={24} color="#4FD1C5" />
@@ -145,7 +141,6 @@ const CreatePostModal = ({ visible, onClose, onSubmit }: CreatePostModalProps) =
                 )}
               </View>
 
-              {/* 發布按鈕 */}
               <View className="mt-4 items-end">
                 <TouchableOpacity
                   onPress={handleSubmit}

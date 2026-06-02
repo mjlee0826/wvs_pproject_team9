@@ -1,4 +1,4 @@
-import MainPage from '../../../../src/containers/MainPage';
+import MainPage from '@/features/post/containers/MainPage';
 
 export default function HomeScreen() {
   return <MainPage />;
