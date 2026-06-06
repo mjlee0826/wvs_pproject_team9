@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import postRoutes from './postRoutes';
-import commentRoutes from './commentRoutes';
+import postRoutes from '../features/post/postRoutes';
+import commentRoutes from '../features/comment/commentRoutes';
 import userRoutes from './userRoutes';
 import logtoRoutes from './logtoRoutes';
 import questionRoutes from './questionRoutes';

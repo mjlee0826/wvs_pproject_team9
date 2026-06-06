@@ -126,8 +126,9 @@ export function useChatRoom(roomId: number) {
 
       await new Promise<void>((resolve) => {
         socket.emit('chat:send', { roomId, content: normalized }, async (ack: SendAck) => {
-          if (ack?.ok && ack.message) {
-            setMessages((prev) => upsertMessage(prev, ack.message));
+          const pushedMessage = ack?.message;
+          if (ack?.ok && pushedMessage) {
+            setMessages((prev) => upsertMessage(prev, pushedMessage));
             setSending(false);
             resolve();
             return;
