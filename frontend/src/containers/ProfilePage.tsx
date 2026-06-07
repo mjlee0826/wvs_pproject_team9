@@ -16,11 +16,11 @@ import {
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useLogto } from '@logto/rn';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import ThreadPost from '@/components/ThreadPost';
+import ThreadPost from '@/features/post/components/ThreadPost';
 import Loading from '@/components/Loading';
 import { useUser } from '@/hooks/useUser';
 import { userApi } from '@/services/userApi';
-import { postApi } from '@/services/postApi';
+import { postApi } from '@/features/post/services/postApi';
 import { clearAllCache } from '@/utils/asyncStorage';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL?.replace('/api', '') ?? '';

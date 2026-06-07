@@ -1,4 +1,4 @@
-import PostDetail from '../../../../src/containers/PostDetail';
+import PostDetail from '@/features/post/containers/PostDetail';
 
 export default function PostDetailScreen() {
   return <PostDetail />;

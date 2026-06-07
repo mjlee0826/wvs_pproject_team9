@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as postService from '../services/postService';
+import * as postService from './postService';
 
 export const getPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {

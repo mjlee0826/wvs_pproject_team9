@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Alert, FlatList, RefreshControl, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import BlueButton from '@/components/BlueButton';
-import CreatePostModal from '@/components/CreatePostModal';
-import Loading from '@/components/Loading';
-import ThreadPost from '@/components/ThreadPost';
-import { usePosts } from '@/hooks/usePosts';
-import { useUser } from '@/hooks/useUser';
-import { postApi } from '@/services/postApi';
+import BlueButton from '../../../components/BlueButton';
+import CreatePostModal from '../components/CreatePostModal';
+import Loading from '../../../components/Loading';
+import ThreadPost from '../components/ThreadPost';
+import { usePosts } from '../hooks/usePosts';
+import { useUser } from '../../../hooks/useUser';
+import { postApi } from '../services/postApi';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL?.replace('/api', '') ?? '';
 

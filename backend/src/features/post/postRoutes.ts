@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { requireAuth, requireAdmin } from '../middleware/auth';
-import { uploadPostImage } from '../utils/upload';
-import * as ctrl from '../controllers/postController';
+import { requireAuth, requireAdmin } from '../../middleware/auth';
+import { uploadPostImage } from '../../utils/upload';
+import * as ctrl from './postController';
 
 const router = Router();
 

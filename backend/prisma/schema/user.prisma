@@ -8,6 +8,7 @@ model User {
   posts       Post[]
   comments    Comment[]
   likes       Like[]
+  messages    Message[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

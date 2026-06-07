@@ -34,11 +34,23 @@
 適合對象：要寫 code 的工程師。
 包含：每個資料夾該放什麼、共用 DB 下的安全 Schema 更新 SOP、`migrate dev` vs `migrate deploy` 何時用、`requireAuth` / `requireAdmin` 權限 middleware 用法、完整實作「聊天室」範例、Git 工作流程、常用指令速查。
 
+### 💬 [CHAT_README.md](./CHAT_README.md)
+> **「我要專門看聊天室技術細節、操作方式與 demo 劇本」**
+
+適合對象：要開發聊天室、做 live demo、排查聊天室問題的人。
+包含：聊天室資料模型、REST/Socket 事件設計、前後端 workflow、啟動步驟、雙裝置 demo 劇本、常見排錯。
+
 ---
 
 ## 🚀 一分鐘啟動（已經跑過一次的人用）
 
 ```bash
+# 先切到專案指定 Node 版本（不影響別人）
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm install
+nvm use
+
 # Terminal 1：Backend
 cd backend && npm install && npm run dev
 
@@ -48,6 +60,8 @@ cd frontend && npm install && npm run start
 ```
 
 > ⚠️ **第一次跑的人請先看 [GETTING_STARTED.md](./GETTING_STARTED.md)**，需要建立 `.env` 跟設定 IP。
+>
+> Node 版本目標：**22 LTS**（專案根目錄 `.nvmrc`）。
 
 ---
 
