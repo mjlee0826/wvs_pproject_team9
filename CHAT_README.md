@@ -18,10 +18,11 @@
 - 發送訊息
 - WebSocket 即時推播（同房間使用者即時收到）
 - Socket 失敗時 fallback 到 REST 發送
+- 聊天室列表即時預覽（在列表頁即可看到最新一則訊息，無需進入房間）
+- 未讀訊息計數（其他人的訊息才計入，自己送的不增加未讀數；進入房間後清零）
 
 目前未做：
 - typing indicator
-- 已讀/未讀
 - 訊息編輯與刪除
 - 多房間權限管理（目前任何登入使用者可進入既有 room）
 
@@ -146,7 +147,24 @@ UI：
 
 Expo Router 與後端總路由仍保留在原本入口位置，負責把請求導向 chat feature。
 
-### 5-2. useChatRoom 核心行為
+### 5-2. useChatRooms 核心行為（列表頁）
+
+1. 初始載入
+- chatApi.getRooms() 取得所有房間
+
+2. 建立 socket 連線
+- token 來自 Logto getAccessToken；同時取得 idToken claims 記錄自己的 sub
+- 連線成功後自動 emit chat:join 給所有已載入房間，保持訂閱
+
+3. 接收推播
+- 監聽 chat:new_message
+- 更新對應 room 的最新訊息預覽
+- 若 authorId !== 自己的 sub，增加該房間未讀計數
+
+4. 進入房間
+- 呼叫 clearUnread(roomId) 將該房間未讀歸零
+
+### 5-3. useChatRoom 核心行為
 
 1. 初始載入
 - chatApi.getMessages(roomId)
@@ -208,6 +226,12 @@ node -v
 - EXPO_PUBLIC_LOGTO_API_RESOURCE
 - EXPO_PUBLIC_LOGTO_REDIRECT_URI
 
+聊天室 demo 使用 ngrok 靜態 domain，URL 永遠固定，不需要每次重開再改 `.env`：
+
+```
+EXPO_PUBLIC_API_URL=https://wrought-impaired-ninth.ngrok-free.dev/api
+```
+
 ---
 
 ## 7. 啟動步驟（開發）
@@ -222,22 +246,27 @@ nvm use
 
 # 2) 安裝依賴
 cd backend && npm install
-cd ../frontend && npm install
+cd ../frontend && npm install --legacy-peer-deps
 
-# 3) 套用 migration（若你的 Prisma migrate 流程可用）
+# 3) 套用 migration
 cd ../backend
 npx prisma migrate deploy
 
-# 4) 啟 backend
+# Terminal 1：啟 backend
 npm run dev
 
-# 5) 另一個 terminal 啟 frontend
+# Terminal 2：啟 ngrok tunnel（固定 domain，一次設定永久使用）
+npx ngrok http --domain=wrought-impaired-ninth.ngrok-free.dev 3000
+
+# Terminal 3：啟 frontend
 cd ../frontend
-npm run start
+npx expo start --tunnel --clear --port 8081
 ```
 
 備註：
-- 若你的環境對 multi-file Prisma schema 的 migration 偵測有差異，可能需要先確認 ChatRoom / Message 表是否已存在，再決定是否手動套 SQL。
+- ngrok authtoken 需事先設定：`npx ngrok config add-authtoken <YOUR_TOKEN>`
+- tunnel domain 已固定，不需每次重開再改 `frontend/.env`
+- `--legacy-peer-deps` 是 frontend 安裝必要的 flag
 
 ---
 
@@ -246,9 +275,11 @@ npm run start
 ### 8-1. Demo 前準備
 
 1. 兩台手機都安裝 Expo Go
-2. 兩台手機與開發機在同一 Wi-Fi
-3. frontend/.env 的 EXPO_PUBLIC_API_URL 使用開發機 LAN IP
-4. backend、frontend 都已啟動
+2. backend 已啟動（port 3000）
+3. ngrok tunnel 已啟動（`npx ngrok http --domain=wrought-impaired-ninth.ngrok-free.dev 3000`）
+4. `frontend/.env` 已設定 `EXPO_PUBLIC_API_URL=https://wrought-impaired-ninth.ngrok-free.dev/api`
+5. frontend 已啟動（`npx expo start --tunnel`）
+6. 兩台手機掃 QR code 進入 App
 
 ### 8-2. Demo 場景 A：聊天室列表
 
@@ -256,8 +287,8 @@ npm run start
 2. 進入 Chat tab
 3. 檢查：
 - 看到 room 清單
-- 有訊息數量
-- 顯示最新一則訊息預覽
+- 每個 room 顯示最新一則訊息預覽
+- 有其他人的未讀訊息時，房間旁顯示綠色未讀數字標記
 
 ### 8-3. Demo 場景 B：房間歷史訊息 + 分頁
 
@@ -275,7 +306,17 @@ npm run start
 - B 幾乎同步收到（無需手動重整）
 4. B 再發一則，A 同步收到
 
-### 8-5. Demo 場景 D：斷線容錯（fallback）
+### 8-5. Demo 場景 D：列表即時預覽 + 未讀計數
+
+1. 手機 A 停留在 Chat 列表頁（不進入任何 room）
+2. 手機 B 進入某個 room 並傳送訊息
+3. 手機 A 的列表頁預期：
+- 對應 room 的最新訊息預覽即時更新（無需重整）
+- 房間名稱旁出現綠色未讀數字，且訊息文字變粗體
+4. 手機 A 點進該 room 後未讀數字消失
+5. 手機 A 自己傳訊息時，自己的列表頁不增加未讀計數
+
+### 8-6. Demo 場景 E：斷線容錯（fallback）
 
 1. 在房間中暫時讓 A 網路不穩（例如關掉 Wi-Fi 再開）
 2. 觀察標題下方連線狀態字串（連線中 / 重新連線中...）
