@@ -53,6 +53,25 @@ export const requireAuth = async (
   }
 };
 
+export const optionalAuth = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return next();
+  try {
+    const payload = await verifyAccessToken(undefined, authHeader);
+    req.user = {
+      sub: payload.sub as string,
+      scope: payload.scope as string | undefined,
+    };
+  } catch {
+    // Silently ignore — caller didn't require auth
+  }
+  next();
+};
+
 export const requireAdmin = async (
   req: Request,
   _res: Response,

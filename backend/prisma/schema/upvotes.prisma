@@ -1,0 +1,11 @@
+// Upvotes on answers
+model Upvote {
+  id        Int      @id @default(autoincrement())
+  answerId  Int
+  answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([answerId, userId])
+}

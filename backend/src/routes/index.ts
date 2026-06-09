@@ -3,7 +3,7 @@ import postRoutes from '../features/post/postRoutes';
 import commentRoutes from '../features/comment/commentRoutes';
 import userRoutes from './userRoutes';
 import logtoRoutes from './logtoRoutes';
-import questionRoutes from './questionRoutes';
+import questionRoutes from '../features/questions/questionRoutes';
 import chatRoutes from '../features/chat/chatRoutes';
 
 export const router = Router();

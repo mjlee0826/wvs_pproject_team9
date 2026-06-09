@@ -9,6 +9,10 @@ model User {
   comments    Comment[]
   likes       Like[]
   messages    Message[]
+  threads     Thread[]
+  answers     Answer[]
+  replies     Reply[]
+  upvotes     Upvote[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

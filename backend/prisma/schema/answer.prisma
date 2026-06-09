@@ -1,0 +1,25 @@
+// Answers to threads
+model Answer {
+  id          Int       @id @default(autoincrement())
+  content     String
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  isOfficial  Boolean   @default(false)
+  threadId    Int
+  thread      Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  comments    Reply[]
+  upvotes     Upvote[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Replies to answers (shown as comments under each answer)
+model Reply {
+  id        Int      @id @default(autoincrement())
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  answerId  Int
+  answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

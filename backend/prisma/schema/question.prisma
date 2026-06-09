@@ -1,0 +1,14 @@
+// Questions / Threads
+// TODO: Add in upvotes (Optional)
+model Thread {
+  id          Int       @id @default(autoincrement())
+  title       String
+  subject     String
+  content     String
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  answers     Answer[]
+  resolved    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
