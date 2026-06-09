@@ -17,6 +17,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { useLogto } from '@logto/rn';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ThreadPost from '@/features/post/components/ThreadPost';
+import ThreadCard from '@/features/questions/components/ThreadCard';
 import Loading from '@/components/Loading';
 import { useUser } from '@/hooks/useUser';
 import { userApi } from '@/services/userApi';
@@ -40,7 +41,7 @@ const ProfilePage = () => {
   const [newName, setNewName] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const { user, posts, loading, refetch, refetchPosts } = useUser('me');
+  const { user, posts, threads, loading, refetch, refetchPosts, refetchThreads } = useUser('me');
   const { signOut } = useLogto();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -48,7 +49,8 @@ const ProfilePage = () => {
   useFocusEffect(
     useCallback(() => {
       refetchPosts();
-    }, [refetchPosts])
+      refetchThreads();
+    }, [refetchPosts, refetchThreads])
   );
 
   const isAdmin = user?.role === 'admin';
@@ -130,22 +132,20 @@ const ProfilePage = () => {
 
   const Tabs = () => (
     <View className="flex-row border-b border-[#E0E0E0] bg-white">
-      <TouchableOpacity
-        className={`flex-1 py-[15px] items-center border-b-[3px] ${activeTab === 'posts' ? 'border-brand' : 'border-transparent'}`}
-        onPress={() => setActiveTab('posts')}
-      >
-        <Text className={`text-base ${activeTab === 'posts' ? 'text-black font-bold' : 'text-[#888]'}`}>
-          貼文
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className={`flex-1 py-[15px] items-center border-b-[3px] ${activeTab === 'coins' ? 'border-brand' : 'border-transparent'}`}
-        onPress={() => setActiveTab('coins')}
-      >
-        <Text className={`text-base ${activeTab === 'coins' ? 'text-black font-bold' : 'text-[#888]'}`}>
-          金幣庫
-        </Text>
-      </TouchableOpacity>
+      {(['posts', 'threads', 'coins'] as const).map((tab) => {
+        const label = tab === 'posts' ? '貼文' : tab === 'threads' ? '提問' : '金幣庫';
+        return (
+          <TouchableOpacity
+            key={tab}
+            className={`flex-1 py-[15px] items-center border-b-[3px] ${activeTab === tab ? 'border-brand' : 'border-transparent'}`}
+            onPress={() => setActiveTab(tab)}
+          >
+            <Text className={`text-base ${activeTab === tab ? 'text-black font-bold' : 'text-[#888]'}`}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 
@@ -172,8 +172,8 @@ const ProfilePage = () => {
               flexDirection: 'row',
               justifyContent: 'flex-end',
               alignItems: 'flex-start',
-              paddingTop: 52,
-              paddingRight: 16,
+              paddingTop: insets.top + 52,
+              paddingRight: insets.right + 16,
             }}
           >
             <TouchableOpacity
@@ -251,7 +251,17 @@ const ProfilePage = () => {
           </View>
 
           {/* 內容區 */}
-          {activeTab === 'posts' ? (
+          {activeTab === 'threads' ? (
+            <View className="pt-4">
+              {threads.length === 0 ? (
+                <View className="p-10 items-center">
+                  <Text className="text-base text-[#999]">尚無提問</Text>
+                </View>
+              ) : (
+                threads.map((thread) => <ThreadCard key={thread.id} item={thread} />)
+              )}
+            </View>
+          ) : activeTab === 'posts' ? (
             <View>
               {posts.length === 0 ? (
                 <View className="p-10 items-center">
@@ -282,6 +292,7 @@ const ProfilePage = () => {
               )}
             </View>
           ) : (
+            /* activeTab === 'coins' */
             <View className="p-5">
               {(() => {
                 const coins = user?.coins ?? 0;

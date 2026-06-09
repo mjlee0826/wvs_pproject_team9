@@ -8,10 +8,12 @@ const authorSelect = {
   role: true,
 };
 
-export async function getThreads(subject?: string, cursor?: string, limit = 10) {
-  const where = subject && subject !== '全部' ? { subject } : undefined;
+export async function getThreads(subject?: string, cursor?: string, limit = 10, authorId?: string) {
+  const where: { subject?: string; authorId?: string } = {};
+  if (subject && subject !== '全部') where.subject = subject;
+  if (authorId) where.authorId = authorId;
   const threads = await prisma.thread.findMany({
-    where,
+    where: Object.keys(where).length > 0 ? where : undefined,
     take: limit + 1,
     ...(cursor ? { cursor: { id: Number(cursor) }, skip: 1 } : {}),
     orderBy: [{ resolved: 'asc' }, { createdAt: 'desc' }],

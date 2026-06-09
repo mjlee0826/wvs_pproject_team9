@@ -6,8 +6,9 @@ export const getThreads = async (req: Request, res: Response, next: NextFunction
     const subject = (req.query.subject as string) || undefined;
     const cursor = req.query.cursor ? String(req.query.cursor) : undefined;
     const limit = req.query.limit ? Number(req.query.limit) : 10;
-    console.log(`[Question] getThreads subject=${subject} cursor=${cursor} limit=${limit}`);
-    const result = await questionService.getThreads(subject, cursor, limit);
+    const authorId = (req.query.authorId as string) || undefined;
+    console.log(`[Question] getThreads subject=${subject} cursor=${cursor} limit=${limit} authorId=${authorId}`);
+    const result = await questionService.getThreads(subject, cursor, limit, authorId);
     res.json(result);
   } catch (err) {
     next(err);

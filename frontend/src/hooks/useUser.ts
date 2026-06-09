@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { userApi, User } from '../services/userApi';
 import { Post } from '../features/post/services/postApi';
+import { questionApi, Thread } from '../features/questions/services/questionApi';
 import { getCachedUser, setCachedUser } from '../utils/asyncStorage';
 
 export function useUser(userId: 'me' | string) {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
@@ -45,14 +47,30 @@ export function useUser(userId: 'me' | string) {
     }
   }, [userId, user?.id]);
 
+  const fetchThreads = useCallback(async () => {
+    try {
+      const id = userId === 'me' ? user?.id : userId;
+      if (!id) return;
+      console.log(`[useUser] 載入使用者提問 id=${id}`);
+      const result = await questionApi.getUserThreads(id);
+      console.log(`[useUser] 取得 ${result.items.length} 則提問`);
+      setThreads(result.items);
+    } catch (err) {
+      console.error(`[useUser] 載入使用者提問失敗:`, err);
+    }
+  }, [userId, user?.id]);
+
   useEffect(() => {
     setLoading(true);
     fetchUser().finally(() => setLoading(false));
   }, [fetchUser]);
 
   useEffect(() => {
-    if (user?.id) fetchPosts();
-  }, [user?.id, fetchPosts]);
+    if (user?.id) {
+      fetchPosts();
+      fetchThreads();
+    }
+  }, [user?.id, fetchPosts, fetchThreads]);
 
-  return { user, posts, loading, refetch: fetchUser, refetchPosts: fetchPosts };
+  return { user, posts, threads, loading, refetch: fetchUser, refetchPosts: fetchPosts, refetchThreads: fetchThreads };
 }

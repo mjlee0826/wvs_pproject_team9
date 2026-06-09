@@ -57,6 +57,12 @@ export const questionApi = {
     return data;
   },
 
+  getUserThreads: async (userId: string) => {
+    const params = new URLSearchParams({ authorId: userId, limit: '50' });
+    const { data } = await apiClient.get<PaginatedResult<Thread>>(`/questions?${params}`);
+    return data;
+  },
+
   getThread: async (id: number) => {
     const { data } = await apiClient.get<Thread>(`/questions/${id}`);
     return data;

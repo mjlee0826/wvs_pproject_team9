@@ -59,7 +59,6 @@ const ThreadDetail = () => {
           </TouchableOpacity>
         </View>
         <Text className="text-white text-xl font-bold">{thread?.title ?? ''}</Text>
-        <Text className="text-white/70 text-xs mt-1">Thread ID: {threadId}</Text>
 
         <View className="flex-row items-center justify-between mt-2">
           <Text className="text-white/80 text-xs">{thread?.subject} · {thread?.author?.displayName}</Text>
