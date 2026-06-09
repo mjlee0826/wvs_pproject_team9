@@ -18,10 +18,9 @@ export default function ThreadCard({ item }: Props) {
       style={{
         marginHorizontal: 16,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
+        shadowOpacity: 0.06,
         shadowRadius: 10,
-        elevation: 3,
+        elevation: 2,
       }}
     >
       <View style={{ height: 4, backgroundColor: resolved ? '#68D391' : '#F6AD55' }} />

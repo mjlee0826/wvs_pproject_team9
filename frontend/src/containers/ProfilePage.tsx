@@ -22,6 +22,7 @@ import { useUser } from '@/hooks/useUser';
 import { userApi } from '@/services/userApi';
 import { postApi } from '@/features/post/services/postApi';
 import { clearAllCache } from '@/utils/asyncStorage';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL?.replace('/api', '') ?? '';
 
@@ -162,12 +163,38 @@ const ProfilePage = () => {
           contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
         >
           {/* 頂部青色橫幅 */}
-          <View className="h-[120px] bg-brand-banner flex-row justify-end items-start pt-[52px] pr-4">
-            <TouchableOpacity className="px-3 py-1" onPress={handleSignOut}>
-              <Text className="text-sm text-red-500">登出</Text>
+          <LinearGradient
+            colors={['#4FD1C5', '#65A1FB']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              height: 120,
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-start',
+              paddingTop: 52,
+              paddingRight: 16,
+            }}
+          >
+            <TouchableOpacity
+              onPress={handleSignOut}
+              style={{
+                backgroundColor: 'rgb(255, 103, 103)', // bubble color
+                paddingHorizontal: 12,
+                paddingVertical: 4,
+                borderRadius: 16,         // pill shape
+                shadowColor: '#000',
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,             // subtle shadow for Android
+              }}
+            >
+              <Text style={{ color: 'white', fontWeight: '600', fontSize: 14 }}>
+                登出
+              </Text>
             </TouchableOpacity>
-          </View>
-
+          </LinearGradient>
+                    
           {/* 個人資料區 */}
           <View className="px-5 mb-5">
             {/* 頭像 */}

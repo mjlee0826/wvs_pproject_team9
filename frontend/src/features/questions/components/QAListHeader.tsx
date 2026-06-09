@@ -56,7 +56,7 @@ export default function QAListHeader({ threadCount, selectedSubject, onSelectSub
         </ScrollView>
       </View>
 
-      <View className="px-4 pt-2">
+      <View className="px-7 pt-2">
         <Text className="text-xs text-[#aaa] mb-3">共 {threadCount} 則討論</Text>
       </View>
     </View>
