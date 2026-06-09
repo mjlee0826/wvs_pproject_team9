@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { useUser } from '../../../src/hooks/useUser';
 import ThreadPost from '../../../src/features/post/components/ThreadPost';
+import ThreadCard from '../../../src/features/questions/components/ThreadCard';
 import LoadingScreen from '../../../src/components/LoadingScreen';
 import { postApi } from '../../../src/features/post/services/postApi';
 
@@ -20,10 +21,10 @@ const coinPrizes = [
 export default function UserProfileScreen() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const router = useRouter();
-  const { user, posts, loading } = useUser(userId);
+  const { user, posts, threads, loading } = useUser(userId);
   const { user: currentUser } = useUser('me');
   const insets = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState<'posts' | 'coins'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'threads' | 'coins'>('posts');
 
   const isAdmin = currentUser?.role === 'admin';
   const avatarUri = user?.avatar ? `${API_BASE}${user.avatar}` : null;
@@ -90,22 +91,20 @@ export default function UserProfileScreen() {
 
         {/* 分頁列 */}
         <View className="flex-row border-b border-[#E0E0E0] bg-white">
-          <TouchableOpacity
-            className={`flex-1 py-[15px] items-center border-b-[3px] ${activeTab === 'posts' ? 'border-brand' : 'border-transparent'}`}
-            onPress={() => setActiveTab('posts')}
-          >
-            <Text className={`text-base ${activeTab === 'posts' ? 'text-black font-bold' : 'text-[#888]'}`}>
-              貼文
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className={`flex-1 py-[15px] items-center border-b-[3px] ${activeTab === 'coins' ? 'border-brand' : 'border-transparent'}`}
-            onPress={() => setActiveTab('coins')}
-          >
-            <Text className={`text-base ${activeTab === 'coins' ? 'text-black font-bold' : 'text-[#888]'}`}>
-              金幣庫
-            </Text>
-          </TouchableOpacity>
+          {(['posts', 'threads', 'coins'] as const).map((tab) => {
+            const label = tab === 'posts' ? '貼文' : tab === 'threads' ? '提問' : '金幣庫';
+            return (
+              <TouchableOpacity
+                key={tab}
+                className={`flex-1 py-[15px] items-center border-b-[3px] ${activeTab === tab ? 'border-brand' : 'border-transparent'}`}
+                onPress={() => setActiveTab(tab)}
+              >
+                <Text className={`text-base ${activeTab === tab ? 'text-black font-bold' : 'text-[#888]'}`}>
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* 貼文 tab */}
@@ -141,6 +140,23 @@ export default function UserProfileScreen() {
                 />
               );
             })
+          )
+        )}
+
+        {/* 提問 tab */}
+        {activeTab === 'threads' && (
+          loading ? (
+            <View className="p-10 items-center">
+              <ActivityIndicator size="large" color="#4FD1C5" />
+            </View>
+          ) : threads.length === 0 ? (
+            <View className="p-10 items-center">
+              <Text className="text-[15px] text-gray-400">此用戶尚無提問</Text>
+            </View>
+          ) : (
+            <View className="pt-4">
+              {threads.map((thread) => <ThreadCard key={thread.id} item={thread} />)}
+            </View>
           )
         )}
 
