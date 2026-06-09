@@ -44,10 +44,10 @@ export default function ThreadCard({ item }: Props) {
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-2">
             <View className="w-7 h-7 rounded-full items-center justify-center bg-[#65A1FB22]">
-              <Text style={{ fontSize: 12 }}>🎓</Text>
+              <Text style={{ fontSize: 12 }}>{item.isAnonymous ? '🕵️' : '🎓'}</Text>
             </View>
             <Text className="text-xs text-[#888]">
-              {item.author?.displayName} · {item.createdAt?.substring(0, 10)}
+              {item.isAnonymous ? '匿名' : item.author?.displayName} · {item.createdAt?.substring(0, 10)}
             </Text>
           </View>
 

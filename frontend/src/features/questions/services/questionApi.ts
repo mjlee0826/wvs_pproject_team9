@@ -15,6 +15,7 @@ export interface Thread {
   authorId: string;
   author: Author;
   resolved: boolean;
+  isAnonymous: boolean;
   createdAt: string;
   updatedAt: string;
   _count?: { answers: number };
@@ -73,7 +74,7 @@ export const questionApi = {
     return data;
   },
 
-  createThread: async (payload: { subject: string; title: string; content: string }) => {
+  createThread: async (payload: { subject: string; title: string; content: string; isAnonymous?: boolean }) => {
     const { data } = await apiClient.post<Thread>('/questions', payload);
     return data;
   },

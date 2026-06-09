@@ -6,6 +6,7 @@ import {
   Modal,
   Platform,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -18,7 +19,7 @@ const FORM_SUBJECTS = ['數學', '英文', '自然', '國文', '社會', '其他
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (payload: { subject: string; title: string; content: string }) => Promise<unknown>;
+  onSubmit: (payload: { subject: string; title: string; content: string; isAnonymous: boolean }) => Promise<unknown>;
 }
 
 export default function NewThreadModal({ visible, onClose, onSubmit }: Props) {
@@ -26,17 +27,19 @@ export default function NewThreadModal({ visible, onClose, onSubmit }: Props) {
   const [formSubject, setFormSubject] = useState(FORM_SUBJECTS[0]);
   const [formTitle, setFormTitle] = useState('');
   const [formContent, setFormContent] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     if (!formTitle.trim() || !formContent.trim()) return;
     setSubmitting(true);
     try {
-      await onSubmit({ subject: formSubject, title: formTitle.trim(), content: formContent.trim() });
+      await onSubmit({ subject: formSubject, title: formTitle.trim(), content: formContent.trim(), isAnonymous });
       onClose();
       setFormTitle('');
       setFormContent('');
       setFormSubject(FORM_SUBJECTS[0]);
+      setIsAnonymous(false);
     } catch (err) {
       console.error('[NewThreadModal] 新增討論失敗:', err);
     } finally {
@@ -98,6 +101,19 @@ export default function NewThreadModal({ visible, onClose, onSubmit }: Props) {
                 textAlignVertical="top"
                 className="bg-[#f5f5f5] rounded-xl px-4 py-3 text-sm text-[#333]"
                 style={{ minHeight: 100 }}
+              />
+            </View>
+
+            <View className="flex-row items-center justify-between py-1">
+              <View>
+                <Text className="text-xs font-semibold text-[#666]">匿名發問</Text>
+                <Text className="text-[10px] text-[#aaa] mt-0.5">其他人看不到你的名字</Text>
+              </View>
+              <Switch
+                value={isAnonymous}
+                onValueChange={setIsAnonymous}
+                trackColor={{ false: '#e0e0e0', true: '#65A1FB' }}
+                thumbColor="white"
               />
             </View>
 

@@ -5,9 +5,9 @@ import * as ctrl from './questionController';
 const router = Router();
 
 // Threads
-router.get('/', ctrl.getThreads);
+router.get('/', optionalAuth, ctrl.getThreads);
 router.post('/', requireAuth, ctrl.createThread);
-router.get('/:id', ctrl.getThreadById);
+router.get('/:id', optionalAuth, ctrl.getThreadById);
 router.patch('/:id/resolve', requireAuth, ctrl.resolveThread);
 
 // Answers

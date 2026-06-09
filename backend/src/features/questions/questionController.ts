@@ -7,8 +7,9 @@ export const getThreads = async (req: Request, res: Response, next: NextFunction
     const cursor = req.query.cursor ? String(req.query.cursor) : undefined;
     const limit = req.query.limit ? Number(req.query.limit) : 10;
     const authorId = (req.query.authorId as string) || undefined;
+    const requesterId = req.user?.sub;
     console.log(`[Question] getThreads subject=${subject} cursor=${cursor} limit=${limit} authorId=${authorId}`);
-    const result = await questionService.getThreads(subject, cursor, limit, authorId);
+    const result = await questionService.getThreads(subject, cursor, limit, authorId, requesterId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -18,8 +19,9 @@ export const getThreads = async (req: Request, res: Response, next: NextFunction
 export const getThreadById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = String(req.params.id);
+    const requesterId = req.user?.sub;
     console.log(`[Question] getThreadById id=${id}`);
-    const thread = await questionService.getThreadById(id);
+    const thread = await questionService.getThreadById(id, requesterId);
     res.json(thread);
   } catch (err) {
     next(err);
@@ -28,9 +30,9 @@ export const getThreadById = async (req: Request, res: Response, next: NextFunct
 
 export const createThread = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { subject, title, content } = req.body as { subject: string; title: string; content: string };
-    console.log(`[Question] createThread sub=${req.user!.sub} title=${title}`);
-    const thread = await questionService.createThread({ subject, title, content, authorId: req.user!.sub });
+    const { subject, title, content, isAnonymous } = req.body as { subject: string; title: string; content: string; isAnonymous?: boolean };
+    console.log(`[Question] createThread sub=${req.user!.sub} title=${title} isAnonymous=${isAnonymous}`);
+    const thread = await questionService.createThread({ subject, title, content, authorId: req.user!.sub, isAnonymous: !!isAnonymous });
     res.status(201).json(thread);
   } catch (err) {
     next(err);

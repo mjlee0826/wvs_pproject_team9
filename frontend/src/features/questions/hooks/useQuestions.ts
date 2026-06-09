@@ -52,7 +52,7 @@ export function useQuestions(initialSubject?: string) {
     setRefreshing(false);
   }, [fetchFirst]);
 
-  const createThread = useCallback(async (payload: { subject: string; title: string; content: string }) => {
+  const createThread = useCallback(async (payload: { subject: string; title: string; content: string; isAnonymous: boolean }) => {
     const thread = await questionApi.createThread(payload);
     setThreads((prev) => [thread, ...prev]);
     return thread;

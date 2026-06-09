@@ -63,7 +63,9 @@ const ThreadDetail = () => {
         <Text className="text-white text-xl font-bold">{thread?.title ?? ''}</Text>
 
         <View className="flex-row items-center justify-between mt-2">
-          <Text className="text-white/80 text-xs">{thread?.subject} · {thread?.author?.displayName}</Text>
+          <Text className="text-white/80 text-xs">
+            {thread?.subject} · {thread?.isAnonymous ? '匿名' : thread?.author?.displayName}
+          </Text>
 
           {canResolve ? (
             <TouchableOpacity

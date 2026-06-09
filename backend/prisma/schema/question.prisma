@@ -1,5 +1,5 @@
 // Questions / Threads
-// TODO: Add in upvotes (Optional)
+// TODO: Add in upvotes
 model Thread {
   id          Int       @id @default(autoincrement())
   title       String
@@ -9,6 +9,7 @@ model Thread {
   author      User      @relation(fields: [authorId], references: [id])
   answers     Answer[]
   resolved    Boolean   @default(false)
+  isAnonymous Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

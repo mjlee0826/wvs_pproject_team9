@@ -8,10 +8,25 @@ const authorSelect = {
   role: true,
 };
 
-export async function getThreads(subject?: string, cursor?: string, limit = 10, authorId?: string) {
-  const where: { subject?: string; authorId?: string } = {};
+const ANONYMOUS_AUTHOR = { id: 'anonymous', displayName: '匿名', avatar: null, role: 'student' };
+
+function maskThread<T extends { isAnonymous: boolean; authorId: string; author: unknown }>(
+  thread: T,
+  requesterId?: string,
+): T {
+  if (!thread.isAnonymous) return thread;
+  if (requesterId && thread.authorId === requesterId) return thread;
+  return { ...thread, author: ANONYMOUS_AUTHOR };
+}
+
+export async function getThreads(subject?: string, cursor?: string, limit = 10, authorId?: string, requesterId?: string) {
+  const where: { subject?: string; authorId?: string; isAnonymous?: false } = {};
   if (subject && subject !== '全部') where.subject = subject;
-  if (authorId) where.authorId = authorId;
+  if (authorId) {
+    where.authorId = authorId;
+    // When viewing another user's profile, hide their anonymous threads
+    if (authorId !== requesterId) where.isAnonymous = false;
+  }
   const threads = await prisma.thread.findMany({
     where: Object.keys(where).length > 0 ? where : undefined,
     take: limit + 1,
@@ -23,22 +38,22 @@ export async function getThreads(subject?: string, cursor?: string, limit = 10, 
   const hasNextPage = threads.length > limit;
   const items = hasNextPage ? threads.slice(0, -1) : threads;
   return {
-    items,
+    items: items.map((t) => maskThread(t, requesterId)),
     nextCursor: hasNextPage ? items[items.length - 1].id : null,
     hasNextPage,
   };
 }
 
-export async function getThreadById(id: string) {
+export async function getThreadById(id: string, requesterId?: string) {
   const thread = await prisma.thread.findUnique({
     where: { id: Number(id) },
     include: { author: { select: authorSelect } },
   });
   if (!thread) throw new ApiError('Thread not found', 404);
-  return thread;
+  return maskThread(thread, requesterId);
 }
 
-export async function createThread(data: { subject: string; title: string; content: string; authorId: string }) {
+export async function createThread(data: { subject: string; title: string; content: string; authorId: string; isAnonymous?: boolean }) {
   return prisma.thread.create({ data, include: { author: { select: authorSelect } } });
 }
 
