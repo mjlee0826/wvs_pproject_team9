@@ -135,7 +135,7 @@ wvs_project_team9/
 - [x] 留言 CRUD
 - [x] 老師按讚 → 學生金幣機制
 - [x] 個人頁（自己 / 別人）+ 編輯 / 換頭像
-- [ ] 聊天室（route 已預留）
-- [ ] 題目解題（route 已預留）
+- [x] 聊天室（route 已預留）
+- [x] 題目解題（route 已預留）
 
 完整功能清單看 [ARCHITECTURE.md § 6](./ARCHITECTURE.md#6-這個專案目前完成的事)。
