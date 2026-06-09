@@ -1,7 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLogto } from '@logto/rn';
 import { io, Socket } from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { chatApi, ChatMessage, ChatRoom } from '../services/chatApi';
+
+const SEEN_KEY = 'chat:seen_counts';
+
+async function loadSeenCounts(): Promise<Record<number, number>> {
+  try {
+    const raw = await AsyncStorage.getItem(SEEN_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+async function saveSeenCount(roomId: number, count: number) {
+  try {
+    const seen = await loadSeenCounts();
+    seen[roomId] = count;
+    await AsyncStorage.setItem(SEEN_KEY, JSON.stringify(seen));
+  } catch {}
+}
 
 const SOCKET_URL = (process.env.EXPO_PUBLIC_API_URL ?? '').replace(/\/api\/?$/, '');
 
@@ -16,8 +36,14 @@ export function useChatRooms() {
 
   const fetchRooms = useCallback(async () => {
     try {
-      const data = await chatApi.getRooms();
+      const [data, seenCounts] = await Promise.all([chatApi.getRooms(), loadSeenCounts()]);
       setRooms(data);
+      const initialUnread: Record<number, number> = {};
+      data.forEach((room) => {
+        const seen = seenCounts[room.id] ?? 0;
+        initialUnread[room.id] = Math.max(0, room._count.messages - seen);
+      });
+      setUnread(initialUnread);
       // join all rooms for live list preview (socket may already be connected)
       if (socketRef.current?.connected) {
         data.forEach((r) => socketRef.current!.emit('chat:join', { roomId: r.id }));
@@ -93,6 +119,11 @@ export function useChatRooms() {
 
   const clearUnread = useCallback((roomId: number) => {
     setUnread((prev) => ({ ...prev, [roomId]: 0 }));
+    setRooms((prev) => {
+      const room = prev.find((r) => r.id === roomId);
+      if (room) saveSeenCount(roomId, room._count.messages);
+      return prev;
+    });
   }, []);
 
   const refresh = useCallback(async () => {
