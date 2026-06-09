@@ -101,11 +101,13 @@ export async function getAnswers(threadId: string, userId?: string) {
   return answers.map((ans) => ({ ...ans, hasUpvoted: upvotedSet.has(ans.id) }));
 }
 
-export async function createAnswer(threadId: string, data: { content: string; authorId: string; isOfficial?: boolean }) {
+export async function createAnswer(threadId: string, data: { content: string; authorId: string }) {
   const thread = await prisma.thread.findUnique({ where: { id: Number(threadId) } });
   if (!thread) throw new ApiError('Thread not found', 404);
+  const author = await prisma.user.findUnique({ where: { id: data.authorId }, select: { role: true } });
+  const isOfficial = author?.role === 'teacher' || author?.role === 'admin';
   return prisma.answer.create({
-    data: { threadId: Number(threadId), ...data },
+    data: { threadId: Number(threadId), ...data, isOfficial },
     include: {
       author: { select: authorSelect },
       _count: { select: { upvotes: true } },
@@ -121,6 +123,7 @@ export async function createReply(answerId: string, data: { content: string; aut
     include: { author: { select: authorSelect } },
   });
 }
+
 
 export async function upvoteAnswer(answerId: string, userId: string) {
   const answer = await prisma.answer.findUnique({ where: { id: Number(answerId) } });

@@ -87,6 +87,7 @@ export const createReply = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
+
 export const upvoteAnswer = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const answerId = String(req.params.answerId);

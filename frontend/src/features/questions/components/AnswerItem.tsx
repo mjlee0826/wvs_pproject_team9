@@ -42,7 +42,7 @@ export default function AnswerItem({ answer, replyText, onChangeReplyText, onSub
           )}
         </View>
 
-        <View className="flex-row items-center gap-1">
+        <View className="flex-row items-center gap-2">
           {isTeacher ? (
             <TouchableOpacity className="flex-row items-center gap-1" onPress={onToggleUpvote}>
               <Ionicons
