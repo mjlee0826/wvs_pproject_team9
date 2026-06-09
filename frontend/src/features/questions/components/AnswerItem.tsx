@@ -10,9 +10,10 @@ interface Props {
   onChangeReplyText: (text: string) => void;
   onSubmitReply: () => void;
   onToggleUpvote: () => void;
+  isTeacher?: boolean;
 }
 
-export default function AnswerItem({ answer, replyText, onChangeReplyText, onSubmitReply, onToggleUpvote }: Props) {
+export default function AnswerItem({ answer, replyText, onChangeReplyText, onSubmitReply, onToggleUpvote, isTeacher }: Props) {
   return (
     <View
       className="bg-white rounded-2xl p-4 mb-3"
@@ -41,16 +42,25 @@ export default function AnswerItem({ answer, replyText, onChangeReplyText, onSub
           )}
         </View>
 
-        <TouchableOpacity className="flex-row items-center gap-1" onPress={onToggleUpvote}>
-          <Ionicons
-            name={answer.hasUpvoted ? 'heart' : 'heart-outline'}
-            size={14}
-            color={answer.hasUpvoted ? '#F56565' : '#aaa'}
-          />
-          <Text className={`text-xs ${answer.hasUpvoted ? 'text-[#F56565]' : 'text-[#aaa]'}`}>
-            {answer._count?.upvotes ?? 0}
-          </Text>
-        </TouchableOpacity>
+        <View className="flex-row items-center gap-1">
+          {isTeacher ? (
+            <TouchableOpacity className="flex-row items-center gap-1" onPress={onToggleUpvote}>
+              <Ionicons
+                name={answer.hasUpvoted ? 'heart' : 'heart-outline'}
+                size={14}
+                color={answer.hasUpvoted ? '#F56565' : '#aaa'}
+              />
+              <Text className={`text-xs ${answer.hasUpvoted ? 'text-[#F56565]' : 'text-[#aaa]'}`}>
+                {answer._count?.upvotes ?? 0}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <>
+              <Ionicons name="heart" size={14} color="#aaa" />
+              <Text className="text-xs text-[#aaa]">{answer._count?.upvotes ?? 0}</Text>
+            </>
+          )}
+        </View>
       </View>
 
       <Text className="text-sm text-[#555] leading-5 mb-3">{answer.content}</Text>

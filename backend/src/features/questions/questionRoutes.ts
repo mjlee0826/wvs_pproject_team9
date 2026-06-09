@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth, optionalAuth } from '../../middleware/auth';
+import { requireAuth, requireAdmin, optionalAuth } from '../../middleware/auth';
 import * as ctrl from './questionController';
 
 const router = Router();
@@ -17,8 +17,8 @@ router.post('/:id/answers', requireAuth, ctrl.createAnswer);
 // Replies to answers
 router.post('/:id/answers/:answerId/replies', requireAuth, ctrl.createReply);
 
-// Upvotes on answers
-router.post('/:id/answers/:answerId/upvote', requireAuth, ctrl.upvoteAnswer);
-router.delete('/:id/answers/:answerId/upvote', requireAuth, ctrl.unupvoteAnswer);
+// Upvotes on answers (teacher/admin only)
+router.post('/:id/answers/:answerId/upvote', requireAuth, requireAdmin, ctrl.upvoteAnswer);
+router.delete('/:id/answers/:answerId/upvote', requireAuth, requireAdmin, ctrl.unupvoteAnswer);
 
 export default router;

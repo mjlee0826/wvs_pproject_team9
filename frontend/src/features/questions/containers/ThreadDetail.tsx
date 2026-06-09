@@ -21,6 +21,8 @@ const ThreadDetail = () => {
   const [replyTexts, setReplyTexts] = useState<Record<string, string>>({});
   const sortedAnswers = [...(answers ?? [])].sort((a, b) => Number(b.isOfficial) - Number(a.isOfficial));
 
+  const isTeacher = me?.role === 'admin';
+
   const canResolve =
     !!me && !!thread &&
     (me.id === thread.authorId || me.role === 'teacher' || me.role === 'admin');
@@ -104,6 +106,7 @@ const ThreadDetail = () => {
               setReplyTexts((prev) => ({ ...prev, [ans.id]: '' }));
             }}
             onToggleUpvote={() => toggleUpvote(ans.id)}
+            isTeacher={isTeacher}
           />
         ))}
       </ScrollView>

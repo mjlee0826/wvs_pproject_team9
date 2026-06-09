@@ -110,7 +110,10 @@ export async function createReply(answerId: string, data: { content: string; aut
 export async function upvoteAnswer(answerId: string, userId: string) {
   const answer = await prisma.answer.findUnique({ where: { id: Number(answerId) } });
   if (!answer) throw new ApiError('Answer not found', 404);
-  await prisma.upvote.create({ data: { answerId: Number(answerId), userId } });
+  await prisma.$transaction([
+    prisma.upvote.create({ data: { answerId: Number(answerId), userId } }),
+    prisma.user.update({ where: { id: answer.authorId }, data: { coins: { increment: 1 } } }),
+  ]);
 }
 
 export async function unupvoteAnswer(answerId: string, userId: string) {
@@ -120,5 +123,8 @@ export async function unupvoteAnswer(answerId: string, userId: string) {
     where: { answerId_userId: { answerId: Number(answerId), userId } },
   });
   if (!upvote) throw new ApiError('Upvote not found', 404);
-  await prisma.upvote.delete({ where: { answerId_userId: { answerId: Number(answerId), userId } } });
+  await prisma.$transaction([
+    prisma.upvote.delete({ where: { answerId_userId: { answerId: Number(answerId), userId } } }),
+    prisma.user.update({ where: { id: answer.authorId }, data: { coins: { decrement: 1 } } }),
+  ]);
 }
